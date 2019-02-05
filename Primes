@@ -1,0 +1,32 @@
+# Prime Number Functions
+"""
+A set of procedures for computing prime numbers, testing primality, etc.
+"""
+
+import scipy as sp
+
+def PrimeList(N):
+    """
+    Uses the Sieve of Eratosthenes to return a list of all the primes less
+    than N
+    """
+
+    # Initialize
+    sieveBound = int((N-1)/2)
+    sieve = [False]*sieveBound
+    crossLimit = (int(scipy.sqrt(N))-1)/2
+
+    # Sieve
+    for x in range(1,crossLimit+1):
+        if not sieve[x]:
+            y = 2*x*(x+1)
+            while y <= sieveBound:
+                sieve[y] = True
+                y += 2*x+1
+
+    # Put the list together.
+    primeList = [2]
+    oddPrimes = [x for x in range(N+1) if (x%2 and not sieve[(x-1)/2])]
+    primeList.extend(oddPrimes)
+
+    return primeList

@@ -1,0 +1,5 @@
+Sudoku
+ - Implement Copy Constructor for SudokuSquare
+ - Test Copy Constructor for Sudoku - (Confirm possibles are not pointer linked)
+ - Test compareLineBox
+

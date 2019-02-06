@@ -356,7 +356,7 @@ def matModMult(A,B,MOD):
 	sp.array([[]],dtype=int)'''
 	assert A.shape[1] == B.shape[0]
 	
-	X = sp.zeros((A.shape[0], B.shape[1]), dtype=sp.int128)
+	X = sp.zeros((A.shape[0], B.shape[1]), dtype=sp.int64)
 	for r in range(A.shape[0]):
 		for c in range(B.shape[1]):
 			for j in range(B.shape[0]):
@@ -369,7 +369,7 @@ def matModPow(A,e,MOD):
 	sp.array([[]],type=int), e and MOD are integers'''
 	assert A.shape[0] == A.shape[1]
 	if e == 0:
-		return sp.eye(A.shape[0], dtype=sp.int128)
+		return sp.eye(A.shape[0], dtype=sp.int64)
 	if e == 1:
 		return A
 	

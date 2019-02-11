@@ -31,15 +31,28 @@
 #     b = (m-(k-1)n)(m-kn) / d
 #     c = mn / d
 #
-#  Here d is the gcd of the numerators
-#
-# Can further show that if gcd(m,n) == 1, all such a,b,c are primitive and that
-# no two pairs (m,n) give the same primitive triple.
-#
+#  Here d is the gcd of the numerators and gcd(m,n) = 1
 # With k = 2 and m % 2 = 0, d = 2
 # With k = 3 and m % 6 = 0, d = 6
 # With k = 3 and m % 6 = 2 or 4, d = 2
 # With k = 3 and m % 6 = 3, d = 3
+#
+# Can further show that if gcd(m,n) = 1, all such a,b,c are primitive and that
+# no two pairs (m,n) give the same primitive triple.  Thus we can enumerate all
+# primitive triples in one-to-one fashion with m,n pairs
+#
+# This proof follows the one for pythagorean triples at
+#   https://en.wikipedia.org/wiki/Pythagorean_triple#Generating_a_triple
+#
+#  Solve kbc = (a+b)(a+c) for a. The quadratic disciminant must be an integer, so
+#  we have to solve
+#
+#   (b+c)^2 + 4(k-1)bc = q^2   =>  x^2 = q^2 + k(k-1)y^2  where
+#                                    x = b + (2k-1) c
+#                                    y = 2c
+#                                    q = 2a + b + c
+#
+#  Solve this equation similar to the pythagorean equation z^2 = x^2 + y^2
 #
 # Use the triangle inequality a+b > c, the orderint a <= b <= c and perimeter
 # limit a+b+c <= N to set bounds on the appropriate m and n.

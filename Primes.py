@@ -3,7 +3,7 @@
 A set of procedures for computing prime numbers, testing primality, etc.
 """
 
-import scipy as sp
+import numpy as sp
 from bisect import bisect
 from fractions import gcd
 from math import log
@@ -15,7 +15,7 @@ def intRoot(n):
     while r*r > n:
         r -= 1
     return r
-    
+
 def MakePrimeList(N):
     """
     Uses the Sieve of Eratosthenes to return a list of all the primes less
@@ -25,7 +25,7 @@ def MakePrimeList(N):
     # Initialize
     sieveBound = int((N+1)/2)
     sieve = [False]*sieveBound
-    crossLimit = (int(sp.sqrt(N))-1)/2
+    crossLimit = (int(sp.sqrt(N))-1)//2
 
     # Sieve
     for x in range(1,crossLimit+1):
@@ -57,7 +57,7 @@ def isPrime(n, primeList=[]):
     """
     if primeList == []:
         primeList = MakePrimeList(int(sp.sqrt(n))+1)
-        
+
     if n <= max(primeList):
         if n in primeList:
             return True
@@ -68,14 +68,14 @@ def isPrime(n, primeList=[]):
     rt = sp.sqrt(n)
     while (j < len(primeList) and primeList[j] < rt):
         j *= 2
-	if j >= len(primeList):
-		j = len(primeList)-1
+        if j >= len(primeList):
+            j = len(primeList)-1
     prime_test = primeList[:j+1]
     for p in prime_test:
         if n % p == 0:
             return False
     return True
-	
+
 def Miller_Rabin(n):
 	a_list=[2,3,5,7,11,13,17]
 	if n in a_list:
@@ -84,10 +84,10 @@ def Miller_Rabin(n):
 		return False
 	if n < max(a_list):
 		return False
-	d = (n-1)/2
+	d = (n-1)//2
 	s = 1
 	while d%2==0:
-		d /= 2
+		d //= 2
 		s += 1
 	for a in a_list:
 		if a > n-2:
@@ -112,7 +112,7 @@ def Miller_Rabin(n):
 class Mobius:
     memo = {}
     memVec = []
-    
+
     def __init__(self, nMax):
         self.nMax = nMax
         if nMax <= len(self.memVec): return
@@ -128,11 +128,11 @@ class Mobius:
             if abs(self.memVec[x]) < x: self.memVec[x] *= -1
             if self.memVec[x] < 0: self.memVec[x] = -1
             else: self.memVec[x] = 1
-    
+
     def __call__(self, n):
         if n <= self.nMax:
             return self.memVec[n]
-            	
+
 class Mertens:
     memo = {}
     def __init__(self, nMax):
@@ -144,11 +144,11 @@ class Mertens:
         for p in primes:
             for x in range(p, r+1, p):
                 self.memVec[x] = -self.memVec[x]
-            for y in range(p*p, r+1, p*p):                
+            for y in range(p*p, r+1, p*p):
                 self.memVec[y] = 0
         for x in range(2, r+1):
             self.memVec[x] += self.memVec[x-1]
-        
+
     def __call__(self, n):
         if n < 0: raise ValueError
         if n <= 1: return n
@@ -161,7 +161,7 @@ class Mertens:
             ans -= ( max(r, n//d) - max(r, n//(d+1)) ) * self(d)
         self.memo[n] = ans
         return ans
-        
+
 class Mertens2:
     mobius = []
     memVec = []
@@ -177,35 +177,35 @@ class Mertens2:
         self.memVec[1] = 1
         for x in range(2, len(self.memVec)):
             self.memVec[x] += self.memVec[x-1]
-            
+
     def __call__(self, n):
         if n <= len(self.memVec): return self.memVec[n]
         if n in self.memo: return self.memo[n]
-        
+
         u = n**(1.0/3.0) * log(log(n))**(2.0/3.0)
         u = int(u) + 1
-        
+
         S1 = 0
         for m in range(1,u+1):
             diff = 0
             for k in range(u//m+1, intRoot(n//m)+1):
                 diff += self(n//(m*k))
             S1 += self.mobius[m] * diff
-            
+
         S2 = 0
         for k in range(1, intRoot(n)+1):
             diff = 0
             for m in range(1, min(u, n//(k*k))+1):
                 diff += self.mobius[m]*self.l(n//m, k)
             S2 += self(k) * diff
-        
+
         self.memo[n] = self(u) - S1 - S2
         return self.memo[n]
-        
+
     def l(self, y, k):
         r = intRoot(y)
         return max(r, y//k) - max(r, y//(k+1))
-		
+
 
 class Prime_Pi:
     # Memoize
@@ -224,7 +224,7 @@ class Prime_Pi:
             pass
         self.memo[m] = self.prime_count(m,primes)
         return self.memo[m]
-        
+
     def prime_count(self, m, primes):
         if m < 2:
             return 0
@@ -255,7 +255,7 @@ class Prime_Pi:
         # Need primes up to (n+mu)th prime
         # We know n+mu < m^1/3 + m^1/2
         for k in range(mu):
-            ans -= self.prime_count(m / primes[n+k], primes)
+            ans -= self.prime_count(m // primes[n+k], primes)
         self.memo[m] = ans
         return ans
 
@@ -273,7 +273,7 @@ class Prime_Pi:
         ans = m
         #print '    m = '+str(m)+', n = '+str(n)
         for ix in range(n):
-            ans -= self.restricted_prime_count(m/primes[ix], ix, primes)
+            ans -= self.restricted_prime_count(m//primes[ix], ix, primes)
         self.restricted_memo[(m,n)] = ans
         return ans
 
@@ -327,17 +327,17 @@ def EulerPhi(N):
     ''' Returns an array phi, where phi[n] is equal to euler's totient function
     applied to n.'''
     phi = sp.arange(N+1,dtype=int)
-    for p in xrange(2,N+1):
+    for p in range(2,N+1):
         if phi[p] != p:   # Didn't find a prime
             continue
-        for x in xrange(p,N+1,p):
-            phi[x] /= p
+        for x in range(p,N+1,p):
+            phi[x] //= p
             phi[x] *= (p-1)
     return phi
 
 
 def primitivePythagoreanTriples(N):
-    ''' Generates all primitive pythagorean triples with legs less than or 
+    ''' Generates all primitive pythagorean triples with legs less than or
     equal to N'''
     aMax = int((2*N*(2**0.5))**0.5)+1
     for a in range(3, aMax+1, 2):
@@ -350,12 +350,12 @@ def primitivePythagoreanTriples(N):
             x,y,z = a*b, (a*a-b*b)//2, (a*a+b*b)//2
             if x <= N and y <= N:
                 yield x,y,z
-				
+
 def matModMult(A,B,MOD):
-	''' Returns the matrix product AB modulo MOD.  A and B must be 
+	''' Returns the matrix product AB modulo MOD.  A and B must be
 	sp.array([[]],dtype=int)'''
 	assert A.shape[1] == B.shape[0]
-	
+
 	X = sp.zeros((A.shape[0], B.shape[1]), dtype=sp.int64)
 	for r in range(A.shape[0]):
 		for c in range(B.shape[1]):
@@ -363,27 +363,24 @@ def matModMult(A,B,MOD):
 				X[r,c] += A[r,j]*B[j,c]
 			X[r,c] %= MOD
 	return X
-	
+
 def matModPow(A,e,MOD):
-	''' Returns the matrix power A^e modulo MOD. A is a square 
+	''' Returns the matrix power A^e modulo MOD. A is a square
 	sp.array([[]],type=int), e and MOD are integers'''
 	assert A.shape[0] == A.shape[1]
 	if e == 0:
 		return sp.eye(A.shape[0], dtype=sp.int64)
 	if e == 1:
 		return A
-	
+
 	X = matModPow(A,e//2,MOD)
 	X = matModMult(X,X,MOD)
 	if (e%2 == 1):
 		X = matModMult(X,A,MOD)
 	return X
-	
+
 def matModInverse(A,p):
 	''' Returns the matrix inverse A^(-1) modulo a prime p
 	for square matrix A. Raises a divide by zero exception if the
 	determinant of A is 0 modulo p '''
 	assert A.shape[0] == A.shape[1]
-	
-	
-            

@@ -251,7 +251,7 @@ class Prime_Pi:
         #print 'm = '+str(m)+', n = '+str(n)+', mu = '+str(mu)
 
         ans = self.restricted_prime_count(m,n, primes)
-        ans += n*(mu+1) + (mu*mu - mu)/2 - 1
+        ans += n*(mu+1) + (mu*mu - mu)//2 - 1
         # Need primes up to (n+mu)th prime
         # We know n+mu < m^1/3 + m^1/2
         for k in range(mu):

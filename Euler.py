@@ -1,4 +1,6 @@
 # Some useful routines for project Euler Problems
+from __future__ import print_function
+from __future__ import division
 import operator
 import numpy as np
 import smtplib
@@ -20,9 +22,9 @@ def sendGmail(msgText, subject, username, password,
         server.login(username,password)
         server.sendmail(fromaddr, [toaddr], msg.as_string())
         server.close()
-        print 'Succesfully sent mail'
+        print('Succesfully sent mail')
     except:
-        print 'Failed to send mail'
+        print('Failed to send mail')
 
     return
 
@@ -34,7 +36,16 @@ def sendVerizonText(msgText, subject, username, password,
     toaddr = phoneNumber+'@vtext.com'
     sendGmail(msgText, subject, username, password, fromaddr, toaddr)
     return
-    
+
+
+def memoize(f):
+    cache = {}
+    def wrapped(*args):
+        if args not in cache:
+            cache[args] = f(*args)
+        return cache[args]
+    return wrapped
+
 
 
 def restrictedPrimeFactorizations(primes, N):
@@ -50,34 +61,34 @@ def restrictedPrimeFactorizations(primes, N):
         n*= ps[ix]
         exp[ix] += 1
         if n >= N:
-            n /= ps[ix] ** exp[ix]
+            n //= ps[ix] ** exp[ix]
             exp[ix] = 0
             ix += 1
         else:
             yield n
             ix = 0
     return
-    
+
 
 def tonelliShanks(n,p):
     '''Computes the square root of n modulo p (You need to guarantee it has
-    a square root'''
+    a square root)'''
     if n == 0:
         return 0
     # Write p-1 = q*2^s
     q = p-1
     s = 0
     while q%2 == 0:
-        q /= 2
+        q //= 2
         s += 1
     if s == 1:   # p = 3 mod 4
-        return pow(n,(p+1)/4,p)
+        return pow(n,(p+1)//4,p)
     # Find non-residue z
     z = 2
     while pow(z,p//2,p) != p-1:
         z += 1
     c = pow(z, q, p)
-    r = pow(n, (q+1)/2, p)
+    r = pow(n, (q+1)//2, p)
     t = pow(n, q, p)
     m = s
     while t != 1:
@@ -117,7 +128,7 @@ def positivePell(D,N):
         p2,q2 = p1,q1
         n,p1,q1,P1,Q1,a1 = n+1,p,q,P,Q,a
         P = a1*Q1 - P1
-        Q = (D-P*P)/Q1
+        Q = (D-P*P)//Q1
         a = (a0 + P)//Q
         p = a*p1 + p2
         q = a*q1 + q2
@@ -128,7 +139,7 @@ def isQuadResidue(n,p):
     if n == 0 or pow(n,p//2,p) == 1:
         return True
     return False
-    
+
 
 def laggedFibonacci(n, MOD=1000000):
     ''' Lagged Fibonacci Generator '''
@@ -157,8 +168,8 @@ def matModExp(A,e,m):
     if (e%2 == 1):
         X = X.dot(A) % m
     return X
-    
-    
+
+
 
 def uniquePermutations(iterator):
     '''Generates the unique permutations of the elements in iterator.  Requires
@@ -223,4 +234,3 @@ def uniquePermutations(iterator):
         # Reverse the pool to the right of ix and yield
         pool[ix+1:] = pool[:ix:-1]
         yield tuple(pool)
-        

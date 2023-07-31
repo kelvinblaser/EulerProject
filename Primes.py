@@ -5,8 +5,7 @@ A set of procedures for computing prime numbers, testing primality, etc.
 
 import numpy as sp
 from bisect import bisect
-from fractions import gcd
-from math import log
+from math import log, gcd
 
 def intRoot(n):
     r = int(n**0.5)

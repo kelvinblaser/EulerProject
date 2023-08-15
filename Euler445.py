@@ -50,21 +50,9 @@
     Q(n) = prod(p | n, 1 + p^v_p) = R(n) + n
     Q(p^m) = 1 + p^m  for primes p
 """
-import collections
+import retractions
 
 MOD = 10**9 + 7
-
-class PrimeFactorization(collections.defaultdict):
-  def __init__(self):
-    super().__init__(int)
-
-  def __repr__(self):
-    return 'x'.join([self.TermString(p, v) for p, v in self.items() if v > 0])
-
-  def TermString(self, p, v):
-    if v == 0: return ''
-    if v == 1: return f'{p}'
-    return f'{p}^{v}'
 
 class QPFAccumulator:
   """QPFAccumulator keeps track of Q as it changes multiplicatively.
@@ -74,12 +62,12 @@ class QPFAccumulator:
 
   In all methods of this class, pf must be the PrimeFactorization of n.
   """
-  def __init__(self, n: int, pf: PrimeFactorization):
+  def __init__(self, n: int, pf: retractions.PrimeFactorization):
     self.n = n
     self.pf = pf
     self.q = QFromPF(pf)
 
-  def Mul(self, n: int, pf: PrimeFactorization):
+  def Mul(self, n: int, pf: retractions.PrimeFactorization):
     self.n *= n
     self.n %= MOD
     for p, dv in pf.items():
@@ -91,7 +79,7 @@ class QPFAccumulator:
       self.q %= MOD
       self.pf[p] += dv
 
-  def Div(self, n: int, pf: PrimeFactorization):
+  def Div(self, n: int, pf: retractions.PrimeFactorization):
     self.n *= pow(n, MOD - 2, MOD)
     self.n %= MOD
     for p, dv in pf.items():
@@ -104,7 +92,7 @@ class QPFAccumulator:
       self.q %= MOD
       self.pf[p] -= dv
 
-def QFromPF(pf: PrimeFactorization) -> int:
+def QFromPF(pf: retractions.PrimeFactorization) -> int:
   q = 1
   for p, v in pf.items():
     q *= (1 + pow(p, v, MOD))
@@ -119,7 +107,7 @@ def Euler445(N: int) -> int:
   # Keep track of Q(NCx) and NCx prime factorizations
   # Sum up R(NCx)
   r = 0
-  acc = QPFAccumulator(1, PrimeFactorization())
+  acc = QPFAccumulator(1, retractions.PrimeFactorization())
   for k in range(1, N):
     acc.Mul(N + 1 - k, pfs[N + 1 - k])
     acc.Div(k, pfs[k])
@@ -128,9 +116,9 @@ def Euler445(N: int) -> int:
       print(k, acc.n, acc.q)
   return r % MOD
 
-def PrimeFactorizations(N: int) -> list[PrimeFactorization]:
+def PrimeFactorizations(N: int) -> list[retractions.PrimeFactorization]:
   """Returns the prime factorizations of all integers up to N."""
-  pfs = [PrimeFactorization() for _ in range(N + 1)]
+  pfs = [retractions.PrimeFactorization() for _ in range(N + 1)]
   nums = list(range(N + 1))
   for p in range(2, N + 1):
     if nums[p] != p:

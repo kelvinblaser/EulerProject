@@ -24,10 +24,10 @@ A couple things I noticed when building trees of different sizes.
    binary representation, and its value in the infinite tree is the suffix of
    the representation starting from that "1"
 
-   So for example, the path to k = 51 in the infinite tree would look like:
+   So for example, the path to k = 43 in the infinite tree would look like:
 
-    k = 51 = 110011 base 2
-    0 (0) -> 1 (1) -> 11 (3) -> 10011 (19) -> 110011 (32)
+    k = 43 = 101011 base 2
+    0 (0) -> 1 (1) -> 11 (3) -> 1011 (11) -> 101011 (43)
 
 """
 from typing import Generator

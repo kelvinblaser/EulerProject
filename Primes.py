@@ -15,7 +15,7 @@ def intRoot(n):
         r -= 1
     return r
 
-def MakePrimeList(N):
+def MakePrimeList(N: int, /) -> list[int]:
     """
     Uses the Sieve of Eratosthenes to return a list of all the primes less
     than or equal to N

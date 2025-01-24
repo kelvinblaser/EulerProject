@@ -7,7 +7,7 @@ import numpy as sp
 from bisect import bisect
 from math import log, gcd
 
-def intRoot(n):
+def intRoot(n: int, /):
     r = int(n**0.5)
     while (r+1)*(r+1) <= n:
         r += 1
@@ -45,7 +45,7 @@ def MakePrimeList(N: int, /) -> list[int]:
 
     return primeList
 
-def isPrime(n, primeList=[]):
+def isPrime(n:int, /, primeList: list[int] = []) -> bool:
     """
     Checks if a number is prime by trial division by all primes up to
     sqrt(n)
@@ -75,7 +75,7 @@ def isPrime(n, primeList=[]):
             return False
     return True
 
-def Miller_Rabin(n):
+def Miller_Rabin(n: int, /):
 	a_list=[2,3,5,7,11,13,17]
 	if n in a_list:
 		return True
@@ -94,7 +94,7 @@ def Miller_Rabin(n):
 		x = pow(a,d,n)
 		if x == 1 or x == n-1:
 			continue
-		for i in range(s-1):
+		for _ in range(s-1):
 			x = pow(x,2,n)
 			if x == 1:
 				return False
@@ -112,10 +112,10 @@ class Mobius:
     memo = {}
     memVec = []
 
-    def __init__(self, nMax):
+    def __init__(self, nMax: int):
         self.nMax = nMax
         if nMax <= len(self.memVec): return
-        self.memVec = [1 for x in range(nMax+1)]
+        self.memVec = [1 for _ in range(nMax+1)]
         primes = MakePrimeList(intRoot(nMax)+1)
         for p in primes:
             for x in range(p*p, nMax+1, p*p):

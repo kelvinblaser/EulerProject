@@ -64,13 +64,6 @@ def _convolve_roundness_distributions(dist1: Mapping[int, int], dist2: Mapping[i
     In a normal convolution, (key1, key2) contribute to key1 + key2 or key1 - key2.
     For roundness though, (key1, key2) contributes to min(key1, key2).
     """
-    convolved: dict[int, int] = collections.defaultdict(int)
-    # The distributions can get big enough that this double loop is slow.
-    # It is itself run in a loop, so tightening this would speed things up.
-    # for r1, count1 in dist1.items():
-    #     for r2, count2 in dist2.items():
-    #         convolved[min(r1, r2)] += count1 * count2
-
     # We can use a two pointer approach to do the convolution.
     # For some r1, if we know the sum of the dist2[r2] where r1 <= r2, then
     # we don't have to multiply and add for each r2 >= r1, we can just multiply
@@ -80,10 +73,9 @@ def _convolve_roundness_distributions(dist1: Mapping[int, int], dist2: Mapping[i
     #
     # So the trick here is to do both of these, and take care that we don't
     # double count when r1 == r2.
+    convolved: dict[int, int] = collections.defaultdict(int)
     keys1 = sorted(dist1.keys())
     keys2 = sorted(dist2.keys())
-    total1 = sum(dist1.values())  # I guess these are cumulative[-1]
-    total2 = sum(dist2.values())
     # The cumulative lists will be indexed parallel to the keys lists.
     cumulative1 = [0] * (len(keys1) + 1)
     for ix, r1 in enumerate(keys1):
@@ -91,6 +83,8 @@ def _convolve_roundness_distributions(dist1: Mapping[int, int], dist2: Mapping[i
     cumulative2 = [0] * (len(keys2) + 1)
     for ix, r2 in enumerate(keys2):
         cumulative2[ix+1] = cumulative2[ix] + dist2[r2]
+    total1 = cumulative1[-1]
+    total2 = cumulative2[-1]
 
     ix1, ix2 = 0, 0
     while ix1 < len(keys1) and ix2 < len(keys2):
